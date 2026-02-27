@@ -1,0 +1,96 @@
+Starting Dynare (version 4.5.4).
+Starting preprocessing of the model file ...
+Found 33 equation(s).
+Evaluating expressions...done
+Computing static model derivatives:
+ - order 1
+Computing dynamic model derivatives:
+ - order 1
+ - order 2
+Processing outputs ...
+done
+Preprocessing completed.
+
+MODEL SUMMARY
+
+  Number of variables:         33
+  Number of stochastic shocks: 7
+  Number of state variables:   20
+  Number of jumpers:           12
+  Number of static variables:  7
+
+
+MATRIX OF COVARIANCE OF EXOGENOUS SHOCKS
+Variables          em        ea        eb        eg       eqs     epinf        ew
+em           1.000000  0.000000  0.000000  0.000000  0.000000  0.000000  0.000000
+ea           0.000000  1.000000  0.000000  0.000000  0.000000  0.000000  0.000000
+eb           0.000000  0.000000  1.000000  0.000000  0.000000  0.000000  0.000000
+eg           0.000000  0.000000  0.000000  1.000000  0.000000  0.000000  0.000000
+eqs          0.000000  0.000000  0.000000  0.000000  1.000000  0.000000  0.000000
+epinf        0.000000  0.000000  0.000000  0.000000  0.000000  1.000000  0.000000
+ew           0.000000  0.000000  0.000000  0.000000  0.000000  0.000000  1.000000
+
+POLICY AND TRANSITION FUNCTIONS
+                                   y               r            pinf              ms
+y(-1)                       0.099359       -0.106246        0.032719               0
+r(-1)                      -0.677297        0.724246       -0.223033               0
+ewma(-1)                    1.011423       -1.835820       -8.406950               0
+epinfma(-1)                 1.338737       -0.845633       -4.403601               0
+yf(-1)                     -0.099359        0.106246       -0.032719               0
+a(-1)                       0.207884       -0.114944       -0.202186               0
+b(-1)                       0.248469        0.038425        0.011894               0
+g(-1)                       0.960974        0.037304        0.036408               0
+qs(-1)                      0.430907        0.028025        0.038919               0
+spinf(-1)                  -1.582085        0.999347        5.204064               0
+sw(-1)                     -1.063527        1.930393        8.840038               0
+kpf(-1)                     0.003701        0.010897        0.004948               0
+kp(-1)                     -0.129260       -0.025554       -0.029803               0
+pinf(-1)                   -0.021644        0.047747        0.215817               0
+cf(-1)                      0.014625       -0.054821       -0.000213               0
+invef(-1)                   0.007081       -0.017122        0.001496               0
+c(-1)                       0.535770        0.080760        0.016752               0
+inve(-1)                    0.175629        0.026486        0.005545               0
+w(-1)                       0.045443        0.036038        0.125299               0
+em                         -0.177481        0.189784       -0.058444        0.229000
+ea                          0.398869       -0.047325       -0.092142               0
+eb                          0.640017        0.098978        0.030636               0
+eg                          0.669884        0.026004        0.025380               0
+eqs                         0.399721        0.025996        0.036103               0
+epinf                      -0.109956        0.068809        0.358944               0
+ew                          0.008856        0.043882        0.180855               0
+
+
+MOMENTS OF SIMULATED VARIABLES
+VARIABLE              MEAN       STD. DEV.        VARIANCE        SKEWNESS        KURTOSIS
+y                 2.992120        7.715338       59.526443        0.237620       -0.033316
+r                -0.123139        0.798837        0.638140       -0.408451        0.112258
+pinf             -0.063498        0.844065        0.712446       -0.370399        0.365993
+ms                0.001748        0.226183        0.051159        0.071881        0.022120
+
+
+CORRELATION OF SIMULATED VARIABLES
+VARIABLE         y       r    pinf      ms
+y           1.0000 -0.6425 -0.5274 -0.0542
+r          -0.6425  1.0000  0.7656  0.2616
+pinf       -0.5274  0.7656  1.0000 -0.0291
+ms         -0.0542  0.2616 -0.0291  1.0000
+
+
+AUTOCORRELATION OF SIMULATED VARIABLES
+VARIABLE         1       2       3       4       5
+y           0.9859  0.9684  0.9486  0.9284  0.9069
+r           0.9495  0.8955  0.8429  0.7912  0.7454
+pinf        0.8433  0.7636  0.7007  0.6570  0.6142
+ms          0.0413 -0.0209  0.0006 -0.0140 -0.0131
+
+
+
+VARIANCE DECOMPOSITION SIMULATING ONE SHOCK AT A TIME (in percent)
+                      em                ea                eb                eg               eqs             epinf                ew  Tot. lin. contr.
+y                   1.11             28.17              2.11              2.80              4.35             11.53             18.49             68.57
+r                   9.19              4.19              6.31              2.45              7.13             17.07             33.18             79.52
+pinf                2.97              3.06              0.56              0.61              1.30             36.50             40.27             85.28
+ms                101.89              0.00              0.00              0.00              0.00              0.00              0.00            101.89
+Note: numbers do not add up to 100 due to non-zero correlation of simulated shocks in small samples
+
+Total computing time : 0h00m01s

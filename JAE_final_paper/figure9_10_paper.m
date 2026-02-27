@@ -1,0 +1,201 @@
+
+
+
+clear all;
+clc;
+close all;
+currentFolder=pwd;
+
+addpath([currentFolder '/2. Codes/auxfiles']);
+rmpath([currentFolder '/2. Codes/Main']);
+addpath([currentFolder '/2. Codes/MarkovSwitching']);
+
+savefolder = [currentFolder '/figures'];
+warning('off')
+mkdir(savefolder)
+warning('on')
+
+
+
+graph_opt.font_num=10;
+
+str_iv_init={};
+str_iv_end={};
+macro_var_str_names={};
+
+%% Loading data
+ 
+data_file = '4. Data/data_combined.txt'; % this is important, load data in a very specific way
+
+%********************************************************
+% Import data series                                    *
+%*******************************************************/
+newData1 = importdata(data_file);
+% Create new variables in the base workspace from those fields.
+vars = fieldnames(newData1);
+for i = 1:length(vars)
+    assignin('base', vars{i}, newData1.(vars{i}));
+end
+YYdata = newData1.data;
+text = newData1.textdata;
+% clear data textdata
+nDate = datenum(text(2:end,1));
+
+
+%% Loading results
+
+% Which MS?
+VAR_select='gk_ff4_MS_beta_v2';
+[priors,options_]=model_specs_data_combined(VAR_select);
+options_.savefig=1;
+% clearing objects
+sample_iv_init=[];
+sample_iv_end=[];
+sample_iv_init_row=[];
+sample_iv_end_row=[];
+proxy=[];
+sample_vector=[];
+
+% folders
+folder1 = [currentFolder '/2. Codes/MarkovSwitching/results/' VAR_select ];
+folder2 = [currentFolder '/2. Codes/Main/results/gk_ff4_v1_fixed'];
+folder3 = [currentFolder '/2. Codes/Main/results/gk_ff4_v1_q_hcauchy'];
+
+i_var_instr = options_.instrList;
+nIV = size(i_var_instr,2);
+
+[~,i_var] = ismember(options_.i_var_str,text(1,2:end));
+[~,i_instr] = ismember(i_var_instr,text(1,2:end));
+
+%************************************************/
+% RETRIEVE POSITION OF FIRST AND LAST OBSERVATION/
+%************************************************/
+T0=options_.p;
+
+sample_init = datenum(options_.str_sample_init, 'yyyy-mm-dd');
+sample_end = datenum(options_.str_sample_end, 'yyyy-mm-dd');
+%sample_iv_init = datenum(str_iv_init, 'yyyy-mm-dd');
+
+[~, sample_init_row] = ismember(sample_init,nDate,'rows');
+[~, sample_end_row] = ismember(sample_end,nDate,'rows');
+%[~, sample_iv_row] = ismember(sample_iv_init,nDate,'rows');
+
+for i=1:nIV
+    sample_iv_init(i,1) = datenum(options_.str_iv_init{i,1}, 'yyyy-mm-dd');
+    sample_iv_end(i,1) = datenum(options_.str_iv_end{i,1}, 'yyyy-mm-dd');
+    [~, sample_iv_init_row(i,1)] = ismember(sample_iv_init(i,1),nDate,'rows');
+    [~, sample_iv_end_row(i,1)] = ismember(sample_iv_end(i,1),nDate,'rows');
+    proxy{i,1} = YYdata(sample_iv_init_row(i,1):sample_iv_end_row(i,1),i_instr(i));
+    % reconstructing the location of instruments w.r.t. post-sample
+    sample_vector(i,1) = sample_iv_init_row(i,1) - T0 - (sample_init_row-1);
+    sample_vector(i,2) = sample_iv_end_row(i,1) - T0 - (sample_init_row-1);
+end
+
+
+
+data = YYdata(sample_init_row:sample_end_row,i_var);
+
+
+load([folder1 '/irf.mat'])
+load([folder1 '/post.mat'])
+f = 0.25/SVAR.LtildeFull(1,1,3);
+SVAR.LtildeFull=f*SVAR.LtildeFull;
+SVAR_MS = SVAR;
+
+load([folder2 '/irf.mat'])
+load([folder2 '/post.mat'])
+f = 0.25/SVAR.LtildeFull(1,1,3);
+SVAR.LtildeFull=f*SVAR.LtildeFull;
+SVAR_Fixed = SVAR;
+
+load([folder3 '/irf.mat'])
+load([folder3 '/post.mat'])
+f = 0.25/SVAR.LtildeFull(1,1,3);
+SVAR.LtildeFull=f*SVAR.LtildeFull;
+SVAR_TVP = SVAR;
+
+%% Plotting    .
+
+for i=1:length(i_var_instr)
+    switch i_var_instr{i}
+        case 'ff4_tc'   
+            proxy_name{i}='Gertler&Karadi';
+        case 'rr_resid_full'
+            proxy_name{i}='Romer&Romer';
+        case 'MM_IV1'
+            proxy_name{i}='Miranda-Agrippino&Ricco'; 
+    end
+end
+macrovarSelec=2;
+macro_var_str_names='CPI';
+
+
+
+nv = size(SVAR.LtildeFull,1);
+Horizon = size(SVAR.LtildeFull,2);
+H = Horizon -1;
+nshock = size(SVAR.LtildeFull,4); 
+nshockplot=nshock;
+FontSize    = 14;
+linW        = 1;
+color_fix   = [.7 .7 .7]+.1;
+color_tvp   = [ 30,144,255]./255;
+color_ms    = [220, 20, 60]./255;
+color_ms   = [220, 20, 60]/255;
+color_tvp  = [ 70,130,180]/255;
+
+patch_axis  = [0:1:H H:-1:0];
+
+figure('Name','CPI'),orient('landscape'),hold on,
+% plotting fixed coeff IRF
+patch_fix = [squeeze(SVAR_Fixed.LtildeFull(macrovarSelec,1:Horizon,2,1))';
+    flipdim(squeeze(SVAR_Fixed.LtildeFull(macrovarSelec,1:Horizon,4,1)),2)']';
+p_1 = patch(patch_axis,patch_fix,color_fix,'EdgeColor','None');
+plot(0:1:H,squeeze(SVAR_Fixed.LtildeFull(macrovarSelec,1:Horizon,3,1)),...
+    'Color',color_fix-.2,'LineStyle','-','Marker','none','LineWidth',linW)
+% plotting tvp coeff IRF
+patch_tvp = [squeeze(SVAR_MS.LtildeFull(macrovarSelec,1:Horizon,2,1))';
+    flipdim(squeeze(SVAR_MS.LtildeFull(macrovarSelec,1:Horizon,4,1)),2)']';
+p_2 = patch(patch_axis,patch_tvp,color_ms,'EdgeColor','None');
+plot(0:1:H,squeeze(SVAR_MS.LtildeFull(macrovarSelec,1:Horizon,3,1)),...
+    'Color',color_ms,'LineStyle','-','Marker','none','LineWidth',linW)
+hline(0,'-k')
+alpha(.5)
+axis([0 H ylim])
+legend([p_1 p_2],{'\beta: Constant','\beta_{s_t}: Markov-Switching'},'Location','NorthEast'),legend boxoff
+%     set(gca,'XTick',0:12:H)
+%     set(gca,'LineWidth',linW)
+xlabel('Horizon (month)')
+set(gca,'XTick',0:12:H)
+grid on;box on
+title('Posterior impulse response function of CPI')
+set(findall(gcf,'-property','FontSize'),'FontSize',FontSize,'FontWeight','Normal','FontName','Times New Roman')
+
+    
+figure('Name','Reliability'),orient('landscape'),hold on,
+color_tvp   = [220, 20, 60]/255;
+color_ms    = [ 70,130,180]/255;
+FontSize    = 12;
+datechar=nDate(sample_iv_init_row(1,1):sample_iv_end_row(1,1),1);
+% TVP
+p1=plot(datechar,SVAR_TVP.RELFull{1,1}(3,:)','color',color_tvp,'LineWidth',linW);
+hold on
+% MS
+p2=plot(datechar,SVAR_MS.RELFull(3,:)','color',color_ms,'LineWidth',linW);
+axis tight,grid on,box on,
+legend('Random Walk','Markov Switching','Location','NorthEast'),legend boxoff
+% title(['Proxy: ' proxy_name],'Interpreter','none')
+%ylabel('Probability','Interpreter','none')
+xlabel('Time','Interpreter','none')
+set(gca,'YLim',[0 1])
+%     legend([p1 p2],{'TVP','Markov Switching'})
+
+    dateFormat = 10;
+    datetick('x',dateFormat)
+%     axis tight
+    grid on
+    title('Reliability')
+%     sgtitle('Miranda-Agrippino & Rocco instrument');
+set(findall(gcf,'-property','FontSize'),'FontSize',FontSize,'FontWeight','Normal','FontName','Times New Roman')
+
+
