@@ -1,3 +1,5 @@
+##Replication package for ``Time-varying reliability: understanding identification in macroeconomics" by Pooyan Amir-Ahmadi, Christian Matthes & Mu-chun Wang (forthcoming, Journal of Applied Econometrics)
+
 Replication package tested on a Windows 11 machine with MATLAB 2024b
 
 US data is contained in '/4. Data/data_combined.txt' 
@@ -38,5 +40,6 @@ Install Dynare 4.5.4. The default installation folder should be '/2. Codes/4.5.4
 AUTHORS: Pooyan Amir-Ahmadi, Christian Matthes, and Mu-Chun Wang
 
 CONTACT: mu-chun.wang@bundesbank.de
+
 
 Date: Feb 26 2026
