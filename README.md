@@ -1,4 +1,4 @@
-## Replication package for ``Time-varying reliability: understanding identification in macroeconomics" by Pooyan Amir-Ahmadi, Christian Matthes & Mu-chun Wang (forthcoming, Journal of Applied Econometrics)
+## Replication package for ``Time-varying reliability: understanding identification in macroeconomics" by Pooyan Amir-Ahmadi, Christian Matthes & Mu-Chun Wang (forthcoming, Journal of Applied Econometrics)
 
 Replication package tested on a Windows 11 machine with MATLAB 2024b
 
@@ -43,4 +43,5 @@ CONTACT: mu-chun.wang@bundesbank.de
 
 
 Date: Feb 26 2026
+
 
